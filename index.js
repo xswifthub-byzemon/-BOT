@@ -6,8 +6,8 @@ const express = require('express');
 // 🌌 ส่วนตั้งค่า Web Server สำหรับ Railway 24/7
 // ==========================================
 const app = express();
-app.get('/', (req, res) => res.send('ปายสแตนด์บายดูแลเซิร์ฟเวอร์ Talkative Galaxy ให้ซีม่อนอยู่ค่ะ! ✨'));
-app.listen(process.env.PORT || 3000, () => console.log('[Pai System] 🌐 ระบบกันบอทหลับทำงานแล้วค่ะ!'));
+app.get('/', (req, res) => res.send('ระบบดูแลเซิร์ฟเวอร์ Talkative Galaxy สแตนด์บายอยู่ค่ะ! ✨'));
+app.listen(process.env.PORT || 3000, () => console.log('[System] 🌐 ระบบกันบอทหลับทำงานแล้วค่ะ!'));
 
 // ==========================================
 // 🤖 ส่วนตั้งค่า Discord Bot
@@ -25,18 +25,17 @@ const client = new Client({
 const commands = [
     new SlashCommandBuilder()
         .setName('setup_role')
-        .setDescription('สร้างแผงข้อความสำหรับกดรับยศ (ปายล็อกไว้ให้ซีม่อนใช้ได้คนเดียวนะคะ)')
+        .setDescription('สร้างแผงข้อความสำหรับกดรับยศ (ล็อกไว้ให้ Owner ใช้ได้คนเดียว)')
         .addRoleOption(option =>
             option.setName('role')
-                .setDescription('เลือกยศที่จะให้ปายมอบให้สมาชิกตอนกดปุ่มค่ะ')
+                .setDescription('เลือกยศที่จะมอบให้สมาชิกตอนกดปุ่มค่ะ')
                 .setRequired(true)
         )
-        // ตั้งค่าพื้นฐานให้คนที่มีสิทธิ์ Admin เห็นคำสั่งนี้ (แต่ปายจะไปเช็คไอดีซีม่อนซ้ำอีกทีตอนกดใช้ค่ะ)
         .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator) 
 ];
 
 client.once('ready', async () => {
-    console.log(`[Pai System] ✨ บอทปายล็อกอินในชื่อ ${client.user.tag} พร้อมรับใช้ซีม่อนแล้วค่ะ!`);
+    console.log(`[System] ✨ บอทล็อกอินในชื่อ ${client.user.tag} พร้อมทำงานแล้วค่ะ!`);
     
     const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
     try {
@@ -44,14 +43,14 @@ client.once('ready', async () => {
             Routes.applicationCommands(client.user.id),
             { body: commands },
         );
-        console.log('[Pai System] ✅ ปายลงทะเบียนคำสั่ง /setup_role สำเร็จแล้วค่ะ!');
+        console.log('[System] ✅ ลงทะเบียนคำสั่ง /setup_role สำเร็จแล้วค่ะ!');
     } catch (error) {
-        console.error('[Pai System] ❌ อ๊ะ! ปายลงทะเบียนคำสั่งไม่ผ่านค่ะ ลองเช็คดูหน่อยน้า:', error);
+        console.error('[System] ❌ ลงทะเบียนคำสั่งไม่ผ่านค่ะ ลองเช็คดูหน่อยน้า:', error);
     }
 });
 
 // ==========================================
-// 🎀 ระบบทำงานเมื่อซีม่อนพิมพ์คำสั่ง หรือ มีคนกดปุ่ม
+// 🎀 ระบบทำงานเมื่อพิมพ์คำสั่ง หรือ มีคนกดปุ่ม
 // ==========================================
 client.on('interactionCreate', async interaction => {
     
@@ -59,14 +58,13 @@ client.on('interactionCreate', async interaction => {
     if (interaction.isChatInputCommand()) {
         if (interaction.commandName === 'setup_role') {
             
-            // 🔒 ให้ปายเช็คก่อนว่าใช่ไอดีของซีม่อนมั้ย!
+            // 🔒 เช็คว่าเป็น Owner หรือเปล่า
             if (interaction.user.id !== process.env.OWNER_ID) {
-                return interaction.reply({ content: '❌ อ๊ะ! คำสั่งนี้ปายอนุญาตให้ซีม่อนใช้ได้แค่คนเดียวเท่านั้นนะคะ ขออภัยด้วยน้า', ephemeral: true });
+                return interaction.reply({ content: '❌ ขออภัยค่ะ คำสั่งนี้สงวนไว้ให้เจ้าของเซิร์ฟเวอร์ใช้งานเท่านั้นนะคะ', ephemeral: true });
             }
 
             const role = interaction.options.getRole('role');
 
-            // แก้ไขดีไซน์ Embed เพิ่มรูปภาพขนาดใหญ่ตามที่ซีม่อนต้องการค่ะ
             const embed = new EmbedBuilder()
                 .setColor('#B026FF') 
                 .setDescription([
@@ -85,7 +83,6 @@ client.on('interactionCreate', async interaction => {
                 ].join('\n'))
                 .setImage('https://cdn.discordapp.com/attachments/1449115719479590984/1454084461888278589/IMG_4820.jpg?ex=699d95af&is=699c442f&hm=7409acc2dd495cf386f0843e40fea69e7f5e54e5785cecd36d2e5a1a53c8f394&');
 
-            // ปุ่มกดที่ใส่อิโมจิเคลื่อนไหวตามที่ซีม่อนรีเควสต์ค่ะ
             const button = new ActionRowBuilder()
                 .addComponents(
                     new ButtonBuilder()
@@ -95,12 +92,12 @@ client.on('interactionCreate', async interaction => {
                         .setStyle(ButtonStyle.Primary)
                 );
 
-            await interaction.reply({ content: '✅ ปายส่งหน้าต่างรับยศแบบใหม่สุดน่ารักพร้อมรูปภาพให้ซีม่อนเรียบร้อยแล้วค่ะ!', ephemeral: true });
+            await interaction.reply({ content: '✅ ส่งหน้าต่างรับยศเรียบร้อยแล้วค่ะ!', ephemeral: true });
             await interaction.channel.send({ embeds: [embed], components: [button] });
         }
     }
 
-    // 2. ถ้ามีสมาชิกมากดปุ่มรับยศ (ตรงนี้สมาชิกทุกคนกดได้ปกติค่ะ)
+    // 2. ถ้ามีสมาชิกมากดปุ่มรับยศ
     if (interaction.isButton()) {
         if (interaction.customId.startsWith('give_role_')) {
             const roleId = interaction.customId.split('_')[2];
@@ -108,20 +105,20 @@ client.on('interactionCreate', async interaction => {
             const member = interaction.member;
 
             if (!role) {
-                return interaction.reply({ content: '❌ ปายหายศนี้ไม่เจอค่ะ ซีม่อนอาจจะลบยศนี้ไปแล้วหรือเปล่าคะ?', ephemeral: true });
+                return interaction.reply({ content: '❌ ไม่พบยศดังกล่าวในระบบค่ะ อาจถูกลบไปแล้ว', ephemeral: true });
             }
 
             try {
                 if (member.roles.cache.has(roleId)) {
                     await member.roles.remove(role);
-                    return interaction.reply({ content: `อ๊ะ! ปายดึงยศ **${role.name}** ออกให้แล้วนะคะ 🌌`, ephemeral: true });
+                    return interaction.reply({ content: `✅ ดึงยศ **${role.name}** ออกให้เรียบร้อยแล้วค่ะ 🌌`, ephemeral: true });
                 } else {
                     await member.roles.add(role);
-                    return interaction.reply({ content: `ยินดีด้วยค่ะ! ปายมอบยศ **${role.name}** ให้เรียบร้อยแล้วนะคะ 🚀✨`, ephemeral: true });
+                    return interaction.reply({ content: `✅ ยินดีด้วยค่ะ! คุณได้รับยศ **${role.name}** เรียบร้อยแล้วนะคะ 🚀✨`, ephemeral: true });
                 }
             } catch (error) {
                 console.error(error);
-                return interaction.reply({ content: '❌ ปายมอบยศให้ไม่ได้ค่ะ ซีม่อนช่วยเข้าไปที่ตั้งค่าเซิร์ฟเวอร์ > บทบาท แล้วเลื่อนยศของ "บอทปาย" ให้อยู่สูงกว่ายศที่จะแจกให้ปายหน่อยน้า', ephemeral: true });
+                return interaction.reply({ content: '❌ ระบบไม่สามารถมอบยศให้ได้ค่ะ กรุณาแจ้งแอดมินให้ตรวจสอบตำแหน่งของยศบอทในตั้งค่าเซิร์ฟเวอร์นะคะ', ephemeral: true });
             }
         }
     }
