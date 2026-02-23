@@ -66,10 +66,19 @@ client.on('interactionCreate', async interaction => {
 
             const role = interaction.options.getRole('role');
 
+            // แก้ไขดีไซน์ Embed ให้มีเส้นขีดสวยๆ ตามที่ซีม่อนต้องการค่ะ
             const embed = new EmbedBuilder()
                 .setColor('#B026FF') 
-                .setTitle('╭ ✦・ ยืนยันตัวตนรับยศ ₊˚.')
-                .setDescription(`ยินดีต้อนรับนักท่องอวกาศทุกท่านเข้าสู่ **𝐓𝐚𝐥𝐤𝐚𝐭𝐢𝐯𝐞 𝐆𝐚𝐥𝐚𝐱𝐲** 🌌\n\nโปรดกดปุ่มด้านล่างเพื่อรับยศและปลดล็อกการมองเห็นห้องต่างๆ ในเซิร์ฟเวอร์นะคะ!\n\n> 🎁 **ยศที่จะได้รับ:** ${role}\n\nขอให้สนุกกับการเดินทางในจักรวาลแห่งนี้นะคะ ✨`)
+                .setTitle('☁️ ‧₊˚ ยืนยันตัวตนรับยศ ˚₊ ☁️') // ปรับหัวข้อให้น่ารักขึ้นนิดนึงเข้ากับเส้นด้านในค่ะ
+                .setDescription([
+                    `╭ ✦・ ยินดีต้อนรับนักท่องอวกาศทุกท่านเข้าสู่ **𝐓𝐚𝐥𝐤𝐚𝐭𝐢𝐯𝐞 𝐆𝐚𝐥𝐚𝐱𝐲** 🌌`,
+                    `┋`,
+                    `┋ ・ โปรดกดปุ่มด้านล่างเพื่อรับยศและปลดล็อกการมองเห็นห้องต่างๆ ในเซิร์ฟเวอร์นะคะ!`,
+                    `┋`,
+                    `┋ 🎁・ **ยศที่จะได้รับ:** ${role}`,
+                    `┋`,
+                    `╰ ✦・ ขอให้สนุกกับการเดินทางในจักรวาลแห่งนี้นะคะ ✨`
+                ].join('\n'))
                 .setFooter({ 
                     text: '🪐 Talkative Galaxy System By ซีม่อน', 
                     iconURL: interaction.guild.iconURL() 
@@ -84,7 +93,7 @@ client.on('interactionCreate', async interaction => {
                         .setStyle(ButtonStyle.Primary)
                 );
 
-            await interaction.reply({ content: '✅ ปายส่งหน้าต่างรับยศให้ซีม่อนเรียบร้อยแล้วค่ะ!', ephemeral: true });
+            await interaction.reply({ content: '✅ ปายส่งหน้าต่างรับยศแบบใหม่ให้ซีม่อนเรียบร้อยแล้วค่ะ!', ephemeral: true });
             await interaction.channel.send({ embeds: [embed], components: [button] });
         }
     }
