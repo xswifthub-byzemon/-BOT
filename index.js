@@ -17,7 +17,7 @@ const client = new Client({
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent, // 🌟 ปายเพิ่มอันนี้เพื่อให้บอทอ่านข้อความในห้องได้ค่ะ
+        GatewayIntentBits.MessageContent, 
     ],
     partials: [Partials.User, Partials.GuildMember]
 });
@@ -80,7 +80,7 @@ client.on('interactionCreate', async interaction => {
     // 1. ถ้ามีการใช้คำสั่ง (Slash Commands)
     if (interaction.isChatInputCommand()) {
         
-        // 🔒 เช็คว่าเป็น Owner หรือเปล่า (ใช้ได้กับทุกคำสั่งของซีม่อน)
+        // 🔒 เช็คว่าเป็น Owner หรือเปล่า 
         if (interaction.user.id !== process.env.OWNER_ID) {
             return interaction.reply({ content: '❌ ขออภัยค่ะ คำสั่งนี้สงวนไว้ให้เจ้าของเซิร์ฟเวอร์ใช้งานเท่านั้นนะคะ', ephemeral: true });
         }
@@ -125,7 +125,6 @@ client.on('interactionCreate', async interaction => {
             const channel = interaction.options.getChannel('channel');
             const role = interaction.options.getRole('role');
 
-            // บันทึกค่าลงในความจำของบอท
             dotSetup.channelId = channel.id;
             dotSetup.roleId = role.id;
 
@@ -170,7 +169,7 @@ client.on('messageCreate', async message => {
     // ป้องกันบอทพิมพ์เอง หรือระบบยังไม่ได้ตั้งค่า
     if (message.author.bot || !dotSetup.channelId) return;
 
-    // เช็คว่าข้อความนี้ส่งมาในห้องที่ซีม่อนตั้งค่าไว้หรือเปล่า
+    // เช็คว่าข้อความนี้ส่งมาในห้องที่ตั้งค่าไว้หรือเปล่า
     if (message.channel.id === dotSetup.channelId) {
         
         // ถ้าพิมพ์ . ถูกต้อง
@@ -179,8 +178,16 @@ client.on('messageCreate', async message => {
             if (role) {
                 try {
                     await message.member.roles.add(role);
-                    // ปายจะลบจุดทิ้งเพื่อความสะอาดของห้องนะคะ (ถ้าซีม่อนไม่อยากให้ลบ ลบบรรทัดล่างออกได้เลยค่ะ)
+                    
+                    // ลบจุดทิ้งเพื่อความสะอาด
                     await message.delete().catch(() => {}); 
+                    
+                    // 🌟 ส่งข้อความแจ้งเตือนว่าได้ยศ และลบทิ้งใน 5 วินาที
+                    const successMsg = await message.channel.send(`✅ ยินดีด้วยค่ะ <@${message.author.id}> คุณได้รับยศ ${role} เรียบร้อยแล้วนะคะ! 🚀✨`);
+                    setTimeout(() => {
+                        successMsg.delete().catch(() => {});
+                    }, 5000);
+
                 } catch (error) {
                     console.error('[System] มอบยศไม่ได้ เช็คตำแหน่งยศบอทด้วยน้า');
                 }
@@ -191,10 +198,11 @@ client.on('messageCreate', async message => {
             try {
                 // ลบข้อความผิดทิ้งทันที
                 await message.delete();
-                // ส่งข้อความเตือนแท็กชื่อ แล้วตั้งเวลาลบทิ้งใน 5 วินาที
-                const warning = await message.channel.send(`❌ อ๊ะ! <@${message.author.id}> ห้องนี้อนุญาตให้พิมพ์แค่ \`.\` เพื่อรับยศเท่านั้นนะคะ!`);
+                
+                // ส่งข้อความเตือน และลบทิ้งใน 5 วินาที
+                const warningMsg = await message.channel.send(`❌ อ๊ะ! <@${message.author.id}> ห้องนี้อนุญาตให้พิมพ์แค่ \`.\` เพื่อรับยศเท่านั้นนะคะ!`);
                 setTimeout(() => {
-                    warning.delete().catch(() => {}); // ลบทิ้งหลัง 5 วิ
+                    warningMsg.delete().catch(() => {}); 
                 }, 5000);
             } catch (error) {
                 console.error('[System] ไม่มีสิทธิ์ลบข้อความค่ะ');
