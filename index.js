@@ -66,34 +66,35 @@ client.on('interactionCreate', async interaction => {
 
             const role = interaction.options.getRole('role');
 
-            // แก้ไขดีไซน์ Embed ปรับข้อความให้สั้นลงเพื่อไม่ให้ตกบรรทัดในมือถือค่ะ
+            // แก้ไขดีไซน์ Embed ตามรูปแบบรูปภาพที่ซีม่อนส่งมาแบบเป๊ะๆ เลยค่ะ
             const embed = new EmbedBuilder()
                 .setColor('#B026FF') 
-                .setTitle('☁️ ‧₊˚ ยืนยันตัวตนรับยศ ˚₊ ☁️') 
                 .setDescription([
-                    `╭ ✦・ ยินดีต้อนรับสู่ **𝐓𝐚𝐥𝐤𝐚𝐭𝐢𝐯𝐞 𝐆𝐚𝐥𝐚𝐱𝐲** 🌌`,
-                    `┋`,
-                    `┋ ・ กดปุ่มด้านล่างเพื่อรับยศได้เลยนะคะ!`,
-                    `┋`,
-                    `┋ 🎁・ **ยศที่จะได้รับ:** ${role}`,
-                    `┋`,
-                    `╰ ✦・ ขอให้สนุกกับเซิร์ฟเวอร์ของเราน้า ✨`
-                ].join('\n'))
-                .setFooter({ 
-                    text: '🪐 Talkative Galaxy System By ซีม่อน', 
-                    iconURL: interaction.guild.iconURL() 
-                });
+                    `╭┈┈ ✧ : รับยศเปิดโซนต่างๆ ˗ˏˋ ꒰ 🦋 ꒱ ˎˊ˗`,
+                    `│`,
+                    `│ <a:DG36:1451619653746036910> · กดปุ่มรับยศเท่านั้น`,
+                    `│`,
+                    `│ <a:1001:1451585309757149227> · ยศที่ได้ ${role}`,
+                    `│`,
+                    `│ <a:emoji_2:1449148118690959440> · **𝐓𝐚𝐥𝐤𝐚𝐭𝐢𝐯𝐞 𝐆𝐚𝐥𝐚𝐱𝐲 𝐂𝐨𝐦𝐦𝐮𝐧𝐢𝐭𝐲** ╰(° ͜ʖ °)╯`,
+                    `│`,
+                    `│ <a:1004:1451585026935488563> · ยินดีต้อนรับทุกคนน้า`,
+                    `│`,
+                    `│ <a:emoji_34:1450185126901321892> · อ่านกฎที่ห้องนี้ <#1449126363725561896>`,
+                    `╰┈┈ ✧ : ➳ By Zemon Źx ⚡`
+                ].join('\n'));
 
+            // ปุ่มกดที่ใส่อิโมจิเคลื่อนไหวตามที่ซีม่อนรีเควสต์ค่ะ
             const button = new ActionRowBuilder()
                 .addComponents(
                     new ButtonBuilder()
                         .setCustomId(`give_role_${role.id}`)
                         .setLabel('กดรับยศเลย!')
-                        .setEmoji('🚀')
+                        .setEmoji('<a:__:1454165136913731594>')
                         .setStyle(ButtonStyle.Primary)
                 );
 
-            await interaction.reply({ content: '✅ ปายส่งหน้าต่างรับยศแบบใหม่ให้ซีม่อนเรียบร้อยแล้วค่ะ!', ephemeral: true });
+            await interaction.reply({ content: '✅ ปายส่งหน้าต่างรับยศแบบใหม่สุดน่ารักให้ซีม่อนเรียบร้อยแล้วค่ะ!', ephemeral: true });
             await interaction.channel.send({ embeds: [embed], components: [button] });
         }
     }
