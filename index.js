@@ -31,13 +31,13 @@ const commands = [
                 .setDescription('เลือกยศที่จะให้ปายมอบให้สมาชิกตอนกดปุ่มค่ะ')
                 .setRequired(true)
         )
+        // ตั้งค่าพื้นฐานให้คนที่มีสิทธิ์ Admin เห็นคำสั่งนี้ (แต่ปายจะไปเช็คไอดีซีม่อนซ้ำอีกทีตอนกดใช้ค่ะ)
         .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator) 
 ];
 
 client.once('ready', async () => {
     console.log(`[Pai System] ✨ บอทปายล็อกอินในชื่อ ${client.user.tag} พร้อมรับใช้ซีม่อนแล้วค่ะ!`);
     
-    // ลงทะเบียนคำสั่ง Slash Command
     const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
     try {
         await rest.put(
@@ -55,22 +55,26 @@ client.once('ready', async () => {
 // ==========================================
 client.on('interactionCreate', async interaction => {
     
-    // 1. ถ้าซีม่อนใช้คำสั่ง /setup_role
+    // 1. ถ้ามีการใช้คำสั่ง /setup_role
     if (interaction.isChatInputCommand()) {
         if (interaction.commandName === 'setup_role') {
+            
+            // 🔒 ให้ปายเช็คก่อนว่าใช่ไอดีของซีม่อนมั้ย!
+            if (interaction.user.id !== process.env.OWNER_ID) {
+                return interaction.reply({ content: '❌ อ๊ะ! คำสั่งนี้ปายอนุญาตให้ซีม่อนใช้ได้แค่คนเดียวเท่านั้นนะคะ ขออภัยด้วยน้า', ephemeral: true });
+            }
+
             const role = interaction.options.getRole('role');
 
-            // ออกแบบหน้าต่างข้อความ (Embed) ให้น่ารักๆ เข้ากับธีมจักรวาล
             const embed = new EmbedBuilder()
                 .setColor('#B026FF') 
                 .setTitle('╭ ✦・ ยืนยันตัวตนรับยศ ₊˚.')
                 .setDescription(`ยินดีต้อนรับนักท่องอวกาศทุกท่านเข้าสู่ **𝐓𝐚𝐥𝐤𝐚𝐭𝐢𝐯𝐞 𝐆𝐚𝐥𝐚𝐱𝐲** 🌌\n\nโปรดกดปุ่มด้านล่างเพื่อรับยศและปลดล็อกการมองเห็นห้องต่างๆ ในเซิร์ฟเวอร์นะคะ!\n\n> 🎁 **ยศที่จะได้รับ:** ${role}\n\nขอให้สนุกกับการเดินทางในจักรวาลแห่งนี้นะคะ ✨`)
                 .setFooter({ 
                     text: '🪐 Talkative Galaxy System By ซีม่อน', 
-                    iconURL: interaction.guild.iconURL() // ดึงรูปโปรไฟล์เซิร์ฟเวอร์มาแสดงด้วยค่ะ
+                    iconURL: interaction.guild.iconURL() 
                 });
 
-            // สร้างปุ่มกด
             const button = new ActionRowBuilder()
                 .addComponents(
                     new ButtonBuilder()
@@ -85,7 +89,7 @@ client.on('interactionCreate', async interaction => {
         }
     }
 
-    // 2. ถ้ามีสมาชิกมากดปุ่มรับยศ
+    // 2. ถ้ามีสมาชิกมากดปุ่มรับยศ (ตรงนี้สมาชิกทุกคนกดได้ปกติค่ะ)
     if (interaction.isButton()) {
         if (interaction.customId.startsWith('give_role_')) {
             const roleId = interaction.customId.split('_')[2];
@@ -97,7 +101,6 @@ client.on('interactionCreate', async interaction => {
             }
 
             try {
-                // ระบบกดซ้ำเพื่อเอายศออก (สลับยศ)
                 if (member.roles.cache.has(roleId)) {
                     await member.roles.remove(role);
                     return interaction.reply({ content: `อ๊ะ! ปายดึงยศ **${role.name}** ออกให้แล้วนะคะ 🌌`, ephemeral: true });
