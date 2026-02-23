@@ -66,7 +66,7 @@ client.on('interactionCreate', async interaction => {
 
             const role = interaction.options.getRole('role');
 
-            // แก้ไขดีไซน์ Embed ตามรูปแบบรูปภาพที่ซีม่อนส่งมาแบบเป๊ะๆ เลยค่ะ
+            // แก้ไขดีไซน์ Embed เพิ่มรูปภาพขนาดใหญ่ตามที่ซีม่อนต้องการค่ะ
             const embed = new EmbedBuilder()
                 .setColor('#B026FF') 
                 .setDescription([
@@ -82,7 +82,8 @@ client.on('interactionCreate', async interaction => {
                     `│`,
                     `│ <a:emoji_34:1450185126901321892> · อ่านกฎที่ห้องนี้ <#1449126363725561896>`,
                     `╰┈┈ ✧ : ➳ By Zemon Źx ⚡`
-                ].join('\n'));
+                ].join('\n'))
+                .setImage('https://cdn.discordapp.com/attachments/1449115719479590984/1454084461888278589/IMG_4820.jpg?ex=699d95af&is=699c442f&hm=7409acc2dd495cf386f0843e40fea69e7f5e54e5785cecd36d2e5a1a53c8f394&');
 
             // ปุ่มกดที่ใส่อิโมจิเคลื่อนไหวตามที่ซีม่อนรีเควสต์ค่ะ
             const button = new ActionRowBuilder()
@@ -94,7 +95,7 @@ client.on('interactionCreate', async interaction => {
                         .setStyle(ButtonStyle.Primary)
                 );
 
-            await interaction.reply({ content: '✅ ปายส่งหน้าต่างรับยศแบบใหม่สุดน่ารักให้ซีม่อนเรียบร้อยแล้วค่ะ!', ephemeral: true });
+            await interaction.reply({ content: '✅ ปายส่งหน้าต่างรับยศแบบใหม่สุดน่ารักพร้อมรูปภาพให้ซีม่อนเรียบร้อยแล้วค่ะ!', ephemeral: true });
             await interaction.channel.send({ embeds: [embed], components: [button] });
         }
     }
