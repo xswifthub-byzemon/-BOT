@@ -1,13 +1,19 @@
 require('dotenv').config();
 const { Client, GatewayIntentBits, Partials, REST, Routes, SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionsBitField } = require('discord.js');
 const express = require('express');
+const path = require('path'); // 🌟 ปายเพิ่ม path สำหรับดึงไฟล์ html ค่ะ
 
 // ==========================================
 // 🌌 ส่วนตั้งค่า Web Server สำหรับ Railway 24/7
 // ==========================================
 const app = express();
-app.get('/', (req, res) => res.send('ระบบดูแลเซิร์ฟเวอร์ Talkative Galaxy สแตนด์บายอยู่ค่ะ! ✨'));
-app.listen(process.env.PORT || 3000, () => console.log('[System] 🌐 ระบบกันบอทหลับทำงานแล้วค่ะ!'));
+
+// 🌟 สั่งให้หน้าเว็บดึงไฟล์ index.html มาแสดงผล
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.listen(process.env.PORT || 3000, () => console.log('[System] 🌐 ระบบกันบอทหลับและหน้าเว็บทำงานแล้วค่ะ!'));
 
 // ==========================================
 // 🤖 ส่วนตั้งค่า Discord Bot
